@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 import "./App.css";
 import {
@@ -11,15 +11,17 @@ import {
   Checkbox,
   Empty,
   Space,
+  ConfigProvider,
+  theme,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { EditableCell } from "./components/EditableCell.tsx";
+import { AppTheme } from "./components/AppTheme.tsx";
 import type { TableProps } from "antd";
 
 export interface DataType {
   key: string;
   name: string;
-  description: string;
   completed: boolean;
 }
 
@@ -34,6 +36,12 @@ function App() {
   );
   const [editingKey, setEditingKey] = useState("");
   const [name, setName] = useState("");
+  const initialTheme =
+    localStorage.getItem("theme") ??
+    (globalThis.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light");
+  const [currentTheme, setTheme] = useState(initialTheme);
 
   function handleInput(event: any) {
     setName(event.target.value);
@@ -44,7 +52,6 @@ function App() {
     newData.push({
       key: genId(),
       name,
-      description: "",
       completed: false,
     });
     setData(newData);
@@ -57,7 +64,6 @@ function App() {
   const edit = (record: Partial<DataType> & { key: React.Key }) => {
     form.setFieldsValue({
       name: "",
-      description: "",
       completed: false,
       ...record,
     });
@@ -105,27 +111,7 @@ function App() {
     {
       title: "Name",
       dataIndex: "name",
-      width: "25%",
-      editable: true,
-      sorter: (a: DataType, b: DataType) => {
-        const nameA = a.name.toUpperCase(); // ignore upper and lowercase
-        const nameB = b.name.toUpperCase(); // ignore upper and lowercase
-        if (nameA < nameB) {
-          return -1;
-        }
-        if (nameA > nameB) {
-          return 1;
-        }
-
-        // names must be equal
-        return 0;
-      },
-      showSorterTooltip: false,
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      width: "40%",
+      width: "30%",
       editable: true,
       sorter: (a: DataType, b: DataType) => {
         const nameA = a.name.toUpperCase(); // ignore upper and lowercase
@@ -145,7 +131,7 @@ function App() {
     {
       title: "Completed",
       dataIndex: "completed",
-      width: "15%",
+      width: "30%",
       editable: true,
       render: (_: any, record: DataType) => {
         return <Checkbox defaultChecked={record["completed"]} disabled />;
@@ -166,6 +152,7 @@ function App() {
     {
       title: "Action",
       dataIndex: "action",
+      width: "40%",
       render: (_: any, record: DataType) => {
         const editable = isEditing(record);
         return editable ? (
@@ -220,47 +207,62 @@ function App() {
   });
 
   return (
-    <div className="container">
-      <h1 className="mb-4">TODO App</h1>
-      <div className="wrapper mb-4">
-        <Input
-          placeholder="Task"
-          allowClear
-          size="large"
-          value={name}
-          onInput={handleInput}
-        />
-        {/* <Input
-          placeholder="Description"
-          allowClear
-          size="large"
-          className="ml-4"
-        /> */}
-        <Button
-          type="primary"
-          size="large"
-          className="ml-4"
-          icon={<PlusOutlined />}
-          onClick={addTask}
-          disabled={name.trim() === ""}
-        >
-          Add Task
-        </Button>
+    <ConfigProvider
+      theme={{
+        // 1. Use dark algorithm
+        algorithm:
+          currentTheme === "dark"
+            ? theme.darkAlgorithm
+            : theme.defaultAlgorithm,
+
+        // 2. Combine dark algorithm and compact algorithm
+        // algorithm: [theme.darkAlgorithm, theme.compactAlgorithm],
+      }}
+    >
+      <div>
+        <header className="flex justify-center items-center text-xl font-semibold h-20 dark:text-white">
+          <h1 className="flex-1 m-4 text-center">TODO App</h1>
+          <AppTheme
+            theme={currentTheme}
+            onClick={(theme: string) => setTheme(theme)}
+          />
+        </header>
+        <main className="container m-2 md:mx-auto text-center w-[95%] h-screen">
+          <div className="flex flex-row items-center mb-4">
+            <Input
+              placeholder="Task"
+              allowClear
+              size="large"
+              value={name}
+              onInput={handleInput}
+            />
+            <Button
+              type="default"
+              size="large"
+              className="ml-4"
+              icon={<PlusOutlined />}
+              onClick={addTask}
+              disabled={name.trim() === ""}
+            >
+              Add Task
+            </Button>
+          </div>
+          <Form form={form} component={false}>
+            <Table<DataType>
+              components={{
+                body: { cell: EditableCell },
+              }}
+              bordered
+              dataSource={data}
+              columns={mergedColumns}
+              rowClassName="editable-row"
+              pagination={{ onChange: cancel }}
+              locale={{ emptyText: <Empty description="No Data"></Empty> }}
+            />
+          </Form>
+        </main>
       </div>
-      <Form form={form} component={false}>
-        <Table<DataType>
-          components={{
-            body: { cell: EditableCell },
-          }}
-          bordered
-          dataSource={data}
-          columns={mergedColumns}
-          rowClassName="editable-row"
-          pagination={{ onChange: cancel }}
-          locale={{ emptyText: <Empty description="No Data"></Empty> }}
-        />
-      </Form>
-    </div>
+    </ConfigProvider>
   );
 }
 

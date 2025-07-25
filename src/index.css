@@ -1,9 +1,11 @@
+@import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@custom-variant dark (&:where(.dark, .dark *));
+
 body {
   background-color: white;
-}
-
-.wrapper {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
 }

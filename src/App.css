@@ -1,17 +1,57 @@
-* {
-  margin: 0;
-  padding: 0;
+.themeButton {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  color: gray;
+  display: flex;
+  align-items: center;
 }
 
-.container {
-  margin: 1rem;
-  text-align: center;
+.themeBackground {
+  background: hsla(0, 0%, 100%, 1);
+
+  background: radial-gradient(
+    circle,
+    hsla(0, 0%, 100%, 1) 0%,
+    hsla(182, 83%, 77%, 1) 100%
+  );
+
+  background: -moz-radial-gradient(
+    circle,
+    hsla(0, 0%, 100%, 1) 0%,
+    hsla(182, 83%, 77%, 1) 100%
+  );
+
+  background: -webkit-radial-gradient(
+    circle,
+    hsla(0, 0%, 100%, 1) 0%,
+    hsla(182, 83%, 77%, 1) 100%
+  );
+
+  filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#FFFFFF", endColorstr="#93F2F5", GradientType=1 );
 }
 
-.ml-4 {
-  margin-left: 1rem;
-}
+.themeBackground.dark {
+  background: hsla(0, 0%, 0%, 1);
 
-.mb-4 {
-  margin-bottom: 1rem;
+  background: radial-gradient(
+    circle,
+    hsla(0, 0%, 0%, 1) 0%,
+    hsla(182, 83%, 77%, 1) 100%
+  );
+
+  background: -moz-radial-gradient(
+    circle,
+    hsla(0, 0%, 0%, 1) 0%,
+    hsla(182, 83%, 77%, 1) 100%
+  );
+
+  background: -webkit-radial-gradient(
+    circle,
+    hsla(0, 0%, 0%, 1) 0%,
+    hsla(182, 83%, 77%, 1) 100%
+  );
+
+  filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#000000", endColorstr="#93F2F5", GradientType=1 );
 }
