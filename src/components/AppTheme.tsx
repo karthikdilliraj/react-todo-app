@@ -4,8 +4,12 @@ export const AppTheme: React.FC<{
 }> = ({ theme, onClick }) => {
   function handleTheme() {
     onClick(theme === "dark" ? "light" : "dark");
-    const element = document.body;
-    element.classList.toggle("dark");
+  }
+  const element = document.body;
+  if (theme === "dark") {
+    element.classList.add("dark");
+  } else {
+    element.classList.remove("dark");
   }
   const iconEl =
     theme === "dark" ? (
