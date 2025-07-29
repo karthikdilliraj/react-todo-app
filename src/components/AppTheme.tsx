@@ -1,6 +1,5 @@
 export const AppTheme: React.FC<{
-  // onClick: React.MouseEventHandler<HTMLElement>;
-  onClick: (theme: string) => any;
+  onClick: (theme: string) => void;
   theme: string;
 }> = ({ theme, onClick }) => {
   function handleTheme() {
