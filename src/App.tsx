@@ -277,7 +277,7 @@ function App() {
                 mask="url(#lineMdCheckAll0)"
               />
             </svg>
-            <h1>TODO App</h1>
+            <h1>React Todo App</h1>
           </div>
           <AppTheme
             theme={currentTheme}
